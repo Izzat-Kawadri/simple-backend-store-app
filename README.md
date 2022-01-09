@@ -2,20 +2,20 @@
 a simple backend store app using spring boot
 ## Introduction :
 The backend system uses the REST API and processes requests from the site / application that sells the company's products.
-As part of the task, we add a new method for calculating the cost of the user's cart.
-The endpoint receives the "Cart" object as input
-1. Array of goods
+1. As part of the task, we add a new method for calculating the cost of the user's cart.
+ The endpoint receives the "Cart" object as input
+  - Array of goods
   - product id (int)
   - the number of goods (int).
   - payment type
   - address id from the user's address book 
    
-At the exit, the "Calculated basket" object
-  1. array of goods
-    - product id (int)
-    - number of goods (int)
-    - amount by position (float)
-    - total amount (float)
+  At the exit, the "Calculated basket" object :
+   - array of goods
+   - product id (int)
+   - number of goods (int)
+   - amount by position (float)
+   - total amount (float)
 
 2. The API method for calculating prices uses an external microservice (via http)
 
@@ -23,16 +23,17 @@ At the exit, the "Calculated basket" object
  from an external microservice and puts them in the cache
 
 ## Implementation :
-To achieve the goal of this write-up, we'll implement three microservices:
+To achieve the goal of this Project, we'll implement three microservices:
 
 1. a service registry (Eureka Server).
 2. a web Store application, which is consuming the REST service as a registry-aware client (Spring Cloud Netflix Feign Client).
 3. a Calculation REST service which registers itself at the registry (Eureka Client)
 
-## 1. service registry (Eureka Server) :
+## 1. Service Registry (Eureka Server) :
 Firstly we'll create a new project and put the dependencies into it. 
 Next, we're creating the main application class:
 
+### main :
 ```java
  @EnableEurekaServer
  @SpringBootApplication
@@ -44,8 +45,8 @@ Next, we're creating the main application class:
  }
  ```
 
-Finally, we're configuring the properties in YAML format; so an application.yml will be our configuration file:
-
+Finally, we're configuring the properties file:
+### properties :
 ```
 server.port=1111
 eureka.client.register-with-eureka=false
@@ -62,7 +63,7 @@ eureka.client.serviceUrl.defaultZone= http://localhost:1111/eureka/
 logging.level.com.netflix.eureka=OFF
 logging.level.com.netflix.discovery=OFF
 ```
-## 2. web Store application :
+## 2. Web Store Application :
  first, we'll add the dependencies. Again,
  then we will declare the entity class of our project.
  ### 1. Product :
@@ -192,7 +193,7 @@ public class CalculatedCart {
   //getters and setters 
   ```
   then we will declare our service class :
-  ### - WebCalculationService :
+  ###  WebCalculationService :
   ```java 
   
 @Service
@@ -216,12 +217,52 @@ public class WebCalculationService {
 	    }
 	}
 ```
+then we will declare our REST Controller class :
+###  WebCalculationController :
+```java 
 
+@Controller
+public class WebCalculationController {
+	  @Autowired
+	    protected WebCalculationService calculationService;
+        
+	  protected Logger logger = Logger.getLogger(WebCalculationController.class
+	            .getName());
 
+	public WebCalculationController(WebCalculationService calculationService) {
+		
+		this.calculationService = calculationService;
+	}
 
- finally we will implement the main application class:
+	@Cacheable("calculatedcart")
+	@RequestMapping("/calc")
+    public CalculatedCart doCalc(Cart cart) {
+ 
+        CalculatedCart calcCart = calculationService.calc(cart);
+ 
+        logger.info("CalculatedCart: " + calcCart);
+        
+ 
+        return calcCart;
+    }  
+}
+```
+after that we will set the application.properties:
+###  application.properties:
+```
+spring.application.name=StoreApp
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+
+server.port=2222
+
+eureka.client.serviceUrl.defaultZone = http://localhost:1111/eureka/
+```
+
+finally we will implement the main application class:
+###  main :
  ```java 
- @EnableAutoConfiguration
+@EnableAutoConfiguration
 @EnableEurekaClient
 @ComponentScan(useDefaultFilters = false)
 @EnableCaching
@@ -253,8 +294,49 @@ public class StoreAppApplication {
 }
 ```
 ## 3. Calculation REST Microservice :
- first, we'll add the dependencies. Again,
- then we will implement the main application class:
+ first, we'll add the dependencies. Again,and we will declare our entity classes to be able use them.
+ after that we will declare the REST Controller that will calculate the full amount 
+ ### CalculationController :
+ ```java 
+ 
+@RestController
+public class CalculationController {
+	float calcAmount = 0;
+	int cartQuantity = 0;
+	int orderId = 0;
+	protected Logger logger = Logger.getLogger(CalculationController.class.getName());
+
+	@RequestMapping("/calc")
+	public CalculatedCart doCalc(@RequestParam Cart cart, @RequestParam Customer customer) {
+
+		Account newCustomer = new Account(customer.getName(), customer.getAddress());
+
+		cartQuantity = cart.getQuantity();
+		while (cartQuantity > 0) {
+			calcAmount = calcAmount + cart.getAmountById(cart.getId());
+			cartQuantity--;
+		}
+		orderId++;
+		Order newOrder = new Order(orderId, customer.getName(), customer.getAddress(), customer.getPaymentType(),
+				calcAmount);
+		return new CalculatedCart(cart.getId(), cart.getProducts(), cart.getAmountById(cart.getId()), calcAmount);
+
+	}
+}
+```
+then we will set the application.properties:
+###  application.properties:
+```
+spring.application.name=Calculation-service
+# HTTP Server
+server.port: 4444
+
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.client.serviceUrl.defaultZone= http://localhost:1111/eureka/
+```
+ finally we will implement the main application class:
+ ### main :
  ```java
 @EnableAutoConfiguration
 @EnableEurekaClient
@@ -266,4 +348,6 @@ public class CalculationMicroServiceApplication {
 	}
 }
 ```
+## Running the Project :
+
 
