@@ -1,0 +1,9 @@
+entity\Product.class
+entity\Order.class
+model\Cart.class
+entity\Account.class
+microservice\CalculationController.class
+com\calculation\service\CalculationMicroServiceApplication.class
+model\Customer.class
+microservice\HomeController.class
+model\CalculatedCart.class

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.storeapp.StoreAppApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.913 s - in com.storeapp.StoreAppApplicationTests

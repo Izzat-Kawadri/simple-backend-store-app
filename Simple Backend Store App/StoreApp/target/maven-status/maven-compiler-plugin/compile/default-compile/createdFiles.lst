@@ -1,0 +1,10 @@
+web\WebCalculationController.class
+entity\Product.class
+entity\Order.class
+com\storeapp\StoreAppApplication.class
+model\Cart.class
+web\HomeController.class
+entity\Account.class
+web\WebCalculationService.class
+model\Customer.class
+model\CalculatedCart.class
