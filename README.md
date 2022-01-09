@@ -57,8 +57,6 @@ eureka.instance.hostname= localhost
 
 eureka.client.instance.leaseRenewalIntervalInSeconds=5
 
-eureka.client.registerWithEureka=true
-eureka.client.fetchRegistry=true
 eureka.client.serviceUrl.defaultZone= http://localhost:1111/eureka/
 
 logging.level.com.netflix.eureka=OFF
