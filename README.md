@@ -355,5 +355,15 @@ public class CalculationMicroServiceApplication {
 ---
 
 ## Running the Project :
-
+to run this project we need to run the 3 applications by open each app then do :
+```
+mvnw clean package 
+```
+then :
+```
+java -jar target\appxx.jar
+```
 ![alt text](https://github.com/Izzat-Kawadri/simple-backend-store-app/blob/e7be45ea334e5ab55c97c07d6706c52aae2860cd/Screenshot.png "Screen")
+## Project Notes :
+this Project is still under development, and i am working to add html templates files using spring thymeleaf.
+if you have any question or you found a bug please contact me :) .
