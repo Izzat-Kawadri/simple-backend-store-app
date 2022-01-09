@@ -21,7 +21,7 @@ The backend system uses the REST API and processes requests from the site / appl
 
 3. The system stores information about the prices of goods in the cache, if there is no information in the cache, then it takes information
  from an external microservice and puts them in the cache
-
+---
 ## Implementation :
 To achieve the goal of this Project, we'll implement three microservices:
 
@@ -29,6 +29,7 @@ To achieve the goal of this Project, we'll implement three microservices:
 2. a web Store application, which is consuming the REST service as a registry-aware client (Spring Cloud Netflix Feign Client).
 3. a Calculation REST service which registers itself at the registry (Eureka Client)
 
+---
 ## 1. Service Registry (Eureka Server) :
 Firstly we'll create a new project and put the dependencies into it. 
 Next, we're creating the main application class:
@@ -63,6 +64,7 @@ eureka.client.serviceUrl.defaultZone= http://localhost:1111/eureka/
 logging.level.com.netflix.eureka=OFF
 logging.level.com.netflix.discovery=OFF
 ```
+---
 ## 2. Web Store Application :
  first, we'll add the dependencies. Again,
  then we will declare the entity class of our project.
@@ -293,6 +295,8 @@ public class StoreAppApplication {
 	
 }
 ```
+---
+
 ## 3. Calculation REST Microservice :
  first, we'll add the dependencies. Again,and we will declare our entity classes to be able use them.
  after that we will declare the REST Controller that will calculate the full amount 
@@ -348,6 +352,8 @@ public class CalculationMicroServiceApplication {
 	}
 }
 ```
+---
+
 ## Running the Project :
 
 
