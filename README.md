@@ -4,14 +4,14 @@ a simple backend store app using spring boot
 The backend system uses the REST API and processes requests from the site / application that sells the company's products.
 1. As part of the task, we add a new method for calculating the cost of the user's cart.
  The endpoint receives the "Cart" object as input
-  - Array of goods
+  - Array of goods (Products)
   - product id (int)
   - the number of goods (int).
-  - payment type
-  - address id from the user's address book 
+  - payment type (String)
+  - address id from the user's address book (String)
    
   At the exit, the "Calculated basket" object :
-   - array of goods
+   - array of goods (Products)
    - product id (int)
    - number of goods (int)
    - amount by position (float)
